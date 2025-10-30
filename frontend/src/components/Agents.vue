@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, defineExpose  } from "vue";
 
 interface Agent {
   id: number;
@@ -84,6 +84,7 @@ const formatDate = (dateStr: string) => {
 };
 
 onMounted(fetchAgents);
+defineExpose({ fetchAgents });
 </script>
 
 <style scoped>

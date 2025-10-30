@@ -1,17 +1,21 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <GetAgents />
+  <Agents ref="agentTableRef"/>
+  <AgentForm @agent-saved="refreshTable"/>
 </template>
 
-<script>
-import GetAgents  from './components/GetAgents.vue'
+<script setup lang="ts">
+import { ref } from "vue";
+import Agents from './components/Agents.vue'
+import AgentForm from './components/AgentForm.vue';
 
-export default {
-  name: 'App',
-  components: {
-    GetAgents
-  }
+const agentTableRef = ref<InstanceType<typeof Agents> | null>(null);
+function refreshTable() {
+  console.log("Refreshing table...");
+  console.log(agentTableRef.value);
+  agentTableRef.value?.fetchAgents();
 }
+
 </script>
 
 <style>
