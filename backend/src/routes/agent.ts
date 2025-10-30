@@ -46,4 +46,10 @@ router.post("/", (req: Request, res: Response) => {
   return res.status(201).json(newAgent);
 });
 
+router.get("/:id", (req: Request, res: Response) => {
+  const agent = agents.find(a => a.id === Number(req.params.id));
+  if (!agent) return res.status(404).json({ message: "Agent not found." });
+  res.json(agent);
+});
+
 export default router;

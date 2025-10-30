@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, defineEmits } from "vue";
+import { ref, onMounted, computed, defineEmits,watch } from "vue";
 
 interface Agent {
     id?: number;
@@ -72,7 +72,33 @@ onMounted(async () => {
     }
 });
 
+watch(
+  () => props.id,
+  async (newId) => {
+    if (newId) {
 
+      try {
+        const res = await fetch(`/api/agents/${newId}`);
+        if (res.ok) {
+          const data = await res.json();
+          form.value = data;
+        }
+      } catch (err) {
+        console.error("Failed to load agent", err);
+      }
+    } else {
+
+      form.value = {
+        id: null,
+        firstName: "",
+        lastName: "",
+        email: "",
+        mobileNumber: "",
+      };
+    }
+  },
+  { immediate: true }
+);
 const handleSubmit = async () => {
     try {
         if (isEdit.value && props.id) {

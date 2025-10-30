@@ -1,53 +1,39 @@
 <template>
   <div class="p-4">
     <h2 class="text-xl font-bold mb-4">Property Agents</h2>
-
-    <!-- Loading state -->
     <p v-if="loading">Loading agents...</p>
-
-    <!-- Error message -->
     <p v-if="error" class="text-red-500">{{ error }}</p>
-
-    <!-- Data table -->
-    <table
-      v-if="!loading && agents.length > 0"
-      class="min-w-full border border-gray-300 rounded-lg"
-    >
-      <thead class="bg-gray-100">
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
         <tr>
-          <th class="border px-4 py-2 text-left">ID</th>
-          <th class="border px-4 py-2 text-left">First Name</th>
-          <th class="border px-4 py-2 text-left">Last Name</th>
-          <th class="border px-4 py-2 text-left">Email</th>
-          <th class="border px-4 py-2 text-left">Mobile</th>
-          <th class="border px-4 py-2 text-left">Created At</th>
-          <th class="border px-4 py-2 text-left">Updated At</th>
+          <th>ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Mobile</th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="agent in agents"
           :key="agent.id"
-          class="hover:bg-gray-50 transition"
+          @click="selectAgent(agent)"
+          style="cursor: pointer"
         >
-          <td class="border px-4 py-2">{{ agent.id }}</td>
-          <td class="border px-4 py-2">{{ agent.firstName }}</td>
-          <td class="border px-4 py-2">{{ agent.lastName }}</td>
-          <td class="border px-4 py-2">{{ agent.email }}</td>
-          <td class="border px-4 py-2">{{ agent.mobileNumber }}</td>
-          <td class="border px-4 py-2">{{ formatDate(agent.createdAt) }}</td>
-          <td class="border px-4 py-2">{{ formatDate(agent.updatedAt) }}</td>
+          <td>{{ agent.id }}</td>
+          <td>{{ agent.firstName }}</td>
+          <td>{{ agent.lastName }}</td>
+          <td>{{ agent.email }}</td>
+          <td>{{ agent.mobileNumber }}</td>
         </tr>
       </tbody>
     </table>
-
-    <!-- Empty state -->
     <p v-if="!loading && agents.length === 0">No agents found.</p>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, defineExpose  } from "vue";
+import { ref, onMounted, defineExpose, defineEmits  } from "vue";
 
 interface Agent {
   id: number;
@@ -62,6 +48,7 @@ interface Agent {
 const agents = ref<Agent[]>([]);
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
+const emit = defineEmits(["agent-selected"]);
 
 const fetchAgents = async () => {
   loading.value = true;
@@ -77,7 +64,9 @@ const fetchAgents = async () => {
     loading.value = false;
   }
 };
-
+function selectAgent(agent: Agent) {
+  emit("agent-selected", agent.id);
+}
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr);
   return date.toLocaleString();
