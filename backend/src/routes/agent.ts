@@ -52,4 +52,26 @@ router.get("/:id", (req: Request, res: Response) => {
   res.json(agent);
 });
 
+router.put("/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const agentIndex = agents.findIndex(a => a.id === id);
+  if (agentIndex === -1)
+    return res.status(404).json({ message: "Agent not found." });
+
+  const existing = agents[agentIndex];
+  const { firstName, lastName, email, mobileNumber } = req.body;
+
+  const updatedAgent: PropertyAgent = {
+    ...existing,
+    firstName: firstName ?? existing.firstName,
+    lastName: lastName ?? existing.lastName,
+    email: email ?? existing.email,
+    mobileNumber: mobileNumber ?? existing.mobileNumber,
+    updatedAt: new Date(),
+  };
+
+  agents[agentIndex] = updatedAgent;
+  res.json(updatedAgent);
+});
+
 export default router;

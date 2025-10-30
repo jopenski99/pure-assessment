@@ -103,7 +103,7 @@ const handleSubmit = async () => {
     try {
         if (isEdit.value && props.id) {
             await await fetch(`/api/agents/${props.id}`, {
-                method: "POST",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
