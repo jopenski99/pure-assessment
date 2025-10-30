@@ -1,41 +1,59 @@
 <template>
     <div class="agent-form">
-        <h2 class="text-lg font-bold mb-4">
-            {{ isEdit ? "Edit Agent" : "Create Agent" }}
-        </h2>
 
-        <form @submit.prevent="handleSubmit" class="space-y-3">
-            <div>
-                <label class="block text-sm font-medium mb-1">First Name</label>
-                <input v-model="form.firstName" type="text" class="border rounded w-full p-2" required />
+        <form @submit.prevent="handleSubmit"
+            class="max-w-md mx-auto bg-white shadow-lg rounded-xl p-6 space-y-4 border border-gray-100">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4 text-center">
+                {{ isEdit ? "Edit Agent" : "Create New Agent" }}
+            </h2>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-medium text-gray-600">First Name</span>
+                </label>
+                <input v-model="form.firstName" type="text" placeholder="Enter first name"
+                    class="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required />
             </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Last Name</label>
-                <input v-model="form.lastName" type="text" class="border rounded w-full p-2" required />
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-medium text-gray-600">Last Name</span>
+                </label>
+                <input v-model="form.lastName" type="text" placeholder="Enter last name"
+                    class="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required />
             </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Email</label>
-                <input v-model="form.email" type="email" class="border rounded w-full p-2" required />
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-medium text-gray-600">Email</span>
+                </label>
+                <input v-model="form.email" type="email" placeholder="example@email.com"
+                    class="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required />
             </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Mobile Number</label>
-                <input v-model="form.mobileNumber" type="text" class="border rounded w-full p-2" required />
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-medium text-gray-600">Mobile Number</span>
+                </label>
+                <input v-model="form.mobileNumber" type="text" placeholder="09xxxxxxxxx"
+                    class="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required />
             </div>
 
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                {{ isEdit ? "Update" : "Create" }} Agent
-            </button>
+            <div class="form-control mt-6 flex justify-between full-width">
+                <button type="submit"
+                    class="btn btn-primary w-full hover:scale-[1.02] transition-transform duration-150 full-width">
+                    {{ isEdit ? "Update Agent" : "Create Agent" }}
+                </button>
+            </div>
         </form>
+
 
         <p v-if="message" class="mt-3 text-green-600">{{ message }}</p>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, defineEmits,watch } from "vue";
+import { ref, onMounted, computed, defineEmits, watch } from "vue";
 
 interface Agent {
     id?: number;
@@ -73,31 +91,31 @@ onMounted(async () => {
 });
 
 watch(
-  () => props.id,
-  async (newId) => {
-    if (newId) {
+    () => props.id,
+    async (newId) => {
+        if (newId) {
 
-      try {
-        const res = await fetch(`/api/agents/${newId}`);
-        if (res.ok) {
-          const data = await res.json();
-          form.value = data;
+            try {
+                const res = await fetch(`/api/agents/${newId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    form.value = data;
+                }
+            } catch (err) {
+                console.error("Failed to load agent", err);
+            }
+        } else {
+
+            form.value = {
+                id: null,
+                firstName: "",
+                lastName: "",
+                email: "",
+                mobileNumber: "",
+            };
         }
-      } catch (err) {
-        console.error("Failed to load agent", err);
-      }
-    } else {
-
-      form.value = {
-        id: null,
-        firstName: "",
-        lastName: "",
-        email: "",
-        mobileNumber: "",
-      };
-    }
-  },
-  { immediate: true }
+    },
+    { immediate: true }
 );
 const handleSubmit = async () => {
     try {
@@ -111,6 +129,7 @@ const handleSubmit = async () => {
             })
             emit("agent-saved");
             message.value = "Agent updated successfully!";
+            form.value = { firstName: "", lastName: "", email: "", mobileNumber: "" };
         } else {
             await await fetch("/api/agents", {
                 method: "POST",
@@ -136,5 +155,17 @@ const handleSubmit = async () => {
 .agent-form {
     max-width: 400px;
     margin: 0 auto;
+}
+
+.label{
+    text-align: left;
+}
+.full-width {
+    width: 100%;
+    margin-top: 10px;
+}
+.form-control {
+    display: flex;
+    justify-content: space-between;
 }
 </style>

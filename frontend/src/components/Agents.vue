@@ -11,6 +11,7 @@
           <th>Last Name</th>
           <th>Email</th>
           <th>Mobile</th>
+          <th>ACtions</th>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +26,11 @@
           <td>{{ agent.lastName }}</td>
           <td>{{ agent.email }}</td>
           <td>{{ agent.mobileNumber }}</td>
+          <td>
+            <button @click.stop="handleDeleteAgent(agent.id)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
+              Delete
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -64,6 +70,25 @@ const fetchAgents = async () => {
     loading.value = false;
   }
 };
+
+function handleDeleteAgent(id: number) {
+  if (confirm("Are you sure you want to delete this agent?")) {
+    deleteAgent(id);
+  }
+}
+
+function deleteAgent(id: number) {
+  fetch(`/api/agents/${id}`, {
+    method: "DELETE",
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+      agents.value = agents.value.filter((agent) => agent.id !== id);
+    })
+    .catch((err) => {
+      alert(err.message || "Failed to delete agent.");
+    });
+}
 function selectAgent(agent: Agent) {
   emit("agent-selected", agent.id);
 }

@@ -74,4 +74,14 @@ router.put("/:id", (req: Request, res: Response) => {
   res.json(updatedAgent);
 });
 
+router.delete("/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const agentIndex = agents.findIndex(a => a.id === id);
+  if (agentIndex === -1)
+    return res.status(404).json({ message: "Agent not found." });
+
+  const deleted = agents.splice(agentIndex, 1);
+  res.json({ message: "Agent deleted successfully.", deleted });
+});
+
 export default router;
