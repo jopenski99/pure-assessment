@@ -77,6 +77,7 @@ const form = ref<Agent>({
 const message = ref("");
 const emit = defineEmits(["agent-saved"]);
 
+
 const isEdit = computed(() => !!props.id);
 
 onMounted(async () => {
@@ -117,6 +118,15 @@ watch(
     },
     { immediate: true }
 );
+function clearForm() {
+    form.value = {
+        firstName: "",
+        lastName: "",
+        email: "",
+        mobileNumber: "",
+    };
+    message.value = "";
+}
 const handleSubmit = async () => {
     try {
         if (isEdit.value && props.id) {
@@ -129,7 +139,7 @@ const handleSubmit = async () => {
             })
             emit("agent-saved");
             message.value = "Agent updated successfully!";
-            form.value = { firstName: "", lastName: "", email: "", mobileNumber: "" };
+            clearForm();
         } else {
             await await fetch("/api/agents", {
                 method: "POST",
@@ -141,7 +151,7 @@ const handleSubmit = async () => {
                 .catch(console.error);;
             message.value = "Agent created successfully!";
             emit("agent-saved");
-            form.value = { firstName: "", lastName: "", email: "", mobileNumber: "" };
+            clearForm();
         }
 
     } catch (err) {
@@ -149,6 +159,8 @@ const handleSubmit = async () => {
         message.value = "Error submitting agent.";
     }
 };
+
+defineExpose({ clearForm });
 </script>
 
 <style scoped>

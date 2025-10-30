@@ -84,6 +84,7 @@ function deleteAgent(id: number) {
     .then((res) => {
       if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
       agents.value = agents.value.filter((agent) => agent.id !== id);
+      emit("agent-deleted");
     })
     .catch((err) => {
       alert(err.message || "Failed to delete agent.");

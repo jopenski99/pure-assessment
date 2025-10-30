@@ -1,7 +1,7 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <Agents ref="agentTableRef" @agent-selected="handleAgentSelected"/>
-  <AgentForm :id="selectedAgent" @agent-saved="refreshTable"/>
+  <Agents ref="agentTableRef" @agent-selected="handleAgentSelected" @agent-deleted="clearForm"/>
+  <AgentForm ref="agentForm" :id="selectedAgent" @agent-saved="refreshTable"/>
 </template>
 
 <script setup lang="ts">
@@ -10,6 +10,7 @@ import Agents from './components/Agents.vue'
 import AgentForm from './components/AgentForm.vue';
 
 const agentTableRef = ref<InstanceType<typeof Agents> | null>(null);
+const agentForm = ref<InstanceType<typeof AgentForm> | null>(null);
 const selectedAgent = ref(null);
 
 function refreshTable() {
@@ -19,6 +20,11 @@ function refreshTable() {
 }
 function handleAgentSelected(agent) {
   selectedAgent.value = agent;
+}
+function clearForm() {
+  console.log("Clearing form...");
+  selectedAgent.value = null;
+  agentForm.value?.clearForm();
 }
 </script>
 
