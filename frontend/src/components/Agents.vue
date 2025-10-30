@@ -11,7 +11,9 @@
           <th>Last Name</th>
           <th>Email</th>
           <th>Mobile</th>
-          <th>ACtions</th>
+          <th>Created at</th>
+          <th>Updated at</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -26,6 +28,8 @@
           <td>{{ agent.lastName }}</td>
           <td>{{ agent.email }}</td>
           <td>{{ agent.mobileNumber }}</td>
+          <td>{{ formatDate(agent.createdAt)}}</td>
+          <td>{{ formatDate(agent.updatedAt) }}</td>
           <td>
             <button @click.stop="handleDeleteAgent(agent.id)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
               Delete
